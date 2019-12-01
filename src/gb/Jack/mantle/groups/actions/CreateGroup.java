@@ -80,7 +80,7 @@ public class CreateGroup implements GroupAction {
                 u.setGroupID(id);
 
                 if (Mantle.cfg.getBoolean("Groups.Use-Team-System")) {
-                    g.getTeam().addEntry(player.getName());
+                    newG.getTeam().addEntry(player.getName());
                 }
 
                 newG.printInfo(player, "Created");
