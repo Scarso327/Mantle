@@ -19,7 +19,9 @@ Groups:
   Per-Page: 5
 
 Chorus-Fruit:
-  Replace-Teleport-With-Effects: true
+  Enable-Effect-Chances: true
+  # This is the chance it'll teleport you. 100 - this chance is the % chance of an effect being applied
+  Teleport-Chance: 25
   # The chances must add up to a value between 0 and 101
   # Chance is the %
   # Duration is in seconds

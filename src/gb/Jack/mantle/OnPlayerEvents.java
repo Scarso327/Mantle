@@ -25,45 +25,49 @@ public class OnPlayerEvents implements Listener {
 
     @EventHandler
     public void onPlayerTeleport(PlayerTeleportEvent event) {
-        if (Mantle.cfg.getBoolean("Chorus-Fruit.Replace-Teleport-With-Effects")) {
+        if (Mantle.cfg.getBoolean("Chorus-Fruit.Enable-Effect-Chances")) {
             if (event.getCause().equals(PlayerTeleportEvent.TeleportCause.CHORUS_FRUIT)) {
-                event.setCancelled(true);
-
                 int random = new Random().nextInt(100) + 1;
-                int chanceTotal = 0;
 
-                Player player = event.getPlayer();
-                PotionEffect effect = null;
+                if (random > Mantle.cfg.getInt("Chorus-Fruit.Teleport-Chance")) {
+                    event.setCancelled(true);
 
-                ConfigurationSection cfgSec = Mantle.cfg.getConfigurationSection("Chorus-Fruit.Effects");
+                    random = new Random().nextInt(100) + 1;
+                    int chanceTotal = 0;
 
-                if (cfgSec != null) {
-                    for (String eff : cfgSec.getKeys(false)) {
-                        int effChance = Mantle.cfg.getInt("Chorus-Fruit.Effects." + eff + ".Chance");
-                        int duration = Mantle.cfg.getInt("Chorus-Fruit.Effects." + eff + ".Duration");
-                        int amp = Mantle.cfg.getInt("Chorus-Fruit.Effects." + eff + ".Amplifier");
+                    Player player = event.getPlayer();
+                    PotionEffect effect = null;
 
-                        if (random <= (effChance + chanceTotal)) {
-                            PotionEffectType type = PotionEffectType.getByName(eff);
+                    ConfigurationSection cfgSec = Mantle.cfg.getConfigurationSection("Chorus-Fruit.Effects");
 
-                            if (type != null) {
-                                effect = new PotionEffect(type, (duration * 20), amp);
-                            } else {
-                                Mantle.log.info("An effect would have been applied to " + player.getName() + " but the effect " + eff + " could not be found");
+                    if (cfgSec != null) {
+                        for (String eff : cfgSec.getKeys(false)) {
+                            int effChance = Mantle.cfg.getInt("Chorus-Fruit.Effects." + eff + ".Chance");
+                            int duration = Mantle.cfg.getInt("Chorus-Fruit.Effects." + eff + ".Duration");
+                            int amp = Mantle.cfg.getInt("Chorus-Fruit.Effects." + eff + ".Amplifier");
+
+                            if (random <= (effChance + chanceTotal)) {
+                                PotionEffectType type = PotionEffectType.getByName(eff);
+
+                                if (type != null) {
+                                    effect = new PotionEffect(type, (duration * 20), amp);
+                                } else {
+                                    Mantle.log.info("An effect would have been applied to " + player.getName() + " but the effect " + eff + " could not be found");
+                                }
+
+                                break;
                             }
 
-                            break;
+                            chanceTotal += effChance;
                         }
-
-                        chanceTotal += effChance;
                     }
-                }
 
-                if (effect != null) {
-                    effect.apply(player);
-                }
+                    if (effect != null) {
+                        effect.apply(player);
+                    }
 
-                player.sendMessage(ChatColor.DARK_PURPLE + "This fruit tastes funny...");
+                    player.sendMessage(ChatColor.DARK_PURPLE + "This fruit tastes funny...");
+                }
             }
         }
     }
