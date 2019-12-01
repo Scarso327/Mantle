@@ -376,12 +376,7 @@ public class Database {
 
             smt = db.prepareStatement("UPDATE " + prefix + "users SET groupid = -1 WHERE groupid = ?");
             smt.setInt(1, id);
-
-            int effectedRows = smt.executeUpdate();
-
-            if (effectedRows < 1) {
-                throw new SQLException("[wipeGroupIDFromMembers] No Rows Altered for ID: " + id);
-            }
+            smt.executeUpdate();
         } finally {
             assert smt != null;
             smt.close();
